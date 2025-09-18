@@ -14,7 +14,214 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      bookings: {
+        Row: {
+          client_email: string
+          client_name: string
+          client_phone: string | null
+          created_at: string
+          currency: string | null
+          end_at: string
+          id: string
+          notes: string | null
+          price_cents: number
+          professional_id: string
+          service_id: string | null
+          start_at: string
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          client_email: string
+          client_name: string
+          client_phone?: string | null
+          created_at?: string
+          currency?: string | null
+          end_at: string
+          id?: string
+          notes?: string | null
+          price_cents?: number
+          professional_id: string
+          service_id?: string | null
+          start_at: string
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          client_email?: string
+          client_name?: string
+          client_phone?: string | null
+          created_at?: string
+          currency?: string | null
+          end_at?: string
+          id?: string
+          notes?: string | null
+          price_cents?: number
+          professional_id?: string
+          service_id?: string | null
+          start_at?: string
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payments: {
+        Row: {
+          amount_cents: number
+          booking_id: string
+          created_at: string
+          currency: string | null
+          id: string
+          method: string
+          proof_url: string | null
+          provider_id: string | null
+          status: string | null
+          updated_at: string
+          verified_at: string | null
+        }
+        Insert: {
+          amount_cents: number
+          booking_id: string
+          created_at?: string
+          currency?: string | null
+          id?: string
+          method: string
+          proof_url?: string | null
+          provider_id?: string | null
+          status?: string | null
+          updated_at?: string
+          verified_at?: string | null
+        }
+        Update: {
+          amount_cents?: number
+          booking_id?: string
+          created_at?: string
+          currency?: string | null
+          id?: string
+          method?: string
+          proof_url?: string | null
+          provider_id?: string | null
+          status?: string | null
+          updated_at?: string
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          id: string
+          monthly_bookings_count: number | null
+          monthly_bookings_limit: number | null
+          name: string
+          phone: string | null
+          pix_key: string | null
+          profession: string | null
+          settings: Json | null
+          slug: string | null
+          subscription_plan: string | null
+          timezone: string | null
+          updated_at: string
+          user_id: string
+          working_hours: Json | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          id?: string
+          monthly_bookings_count?: number | null
+          monthly_bookings_limit?: number | null
+          name: string
+          phone?: string | null
+          pix_key?: string | null
+          profession?: string | null
+          settings?: Json | null
+          slug?: string | null
+          subscription_plan?: string | null
+          timezone?: string | null
+          updated_at?: string
+          user_id: string
+          working_hours?: Json | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          id?: string
+          monthly_bookings_count?: number | null
+          monthly_bookings_limit?: number | null
+          name?: string
+          phone?: string | null
+          pix_key?: string | null
+          profession?: string | null
+          settings?: Json | null
+          slug?: string | null
+          subscription_plan?: string | null
+          timezone?: string | null
+          updated_at?: string
+          user_id?: string
+          working_hours?: Json | null
+        }
+        Relationships: []
+      }
+      services: {
+        Row: {
+          created_at: string
+          currency: string | null
+          description: string | null
+          duration_minutes: number
+          id: string
+          is_active: boolean | null
+          name: string
+          price_cents: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          currency?: string | null
+          description?: string | null
+          duration_minutes?: number
+          id?: string
+          is_active?: boolean | null
+          name: string
+          price_cents?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          currency?: string | null
+          description?: string | null
+          duration_minutes?: number
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          price_cents?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

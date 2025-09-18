@@ -6,7 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Check } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 import logoImage from "@/assets/logo.png";
 
 const plans = [
@@ -37,16 +38,20 @@ export default function Signup() {
     profession: ""
   });
 
+  const { signUp } = useAuth();
+  const navigate = useNavigate();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      // Redirect to dashboard
-      window.location.href = "/dashboard";
-    }, 2000);
+    const { error } = await signUp(formData.email, formData.password, formData.name, formData.profession);
+    
+    if (!error) {
+      navigate('/login');
+    }
+    
+    setIsLoading(false);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Calendar, Clock, Users, Zap, ArrowRight, Play } from "lucide-react";
+import { Calendar, Clock, Users, Zap, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const features = [
   {
@@ -92,14 +93,12 @@ export function Hero() {
               transition={{ delay: 0.5, duration: 0.6 }}
               className="flex flex-col sm:flex-row gap-4"
             >
-              <Button size="lg" className="btn-glow btn-3d group">
-                Começar Grátis Agora
-                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-              </Button>
-              <Button variant="outline" size="lg" className="group">
-                <Play className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
-                Ver Demonstração
-              </Button>
+              <Link to="/signup">
+                <Button size="lg" className="btn-glow btn-3d group">
+                  Começar Grátis Agora
+                  <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              </Link>
             </motion.div>
 
             {/* Stats */}
