@@ -2,41 +2,69 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Reservo Design System - Modern Purple Theme with Glassmorphism */
 
 @layer base {
   :root {
+    /* Reservo Purple Brand Colors */
+    --primary: 263 70% 50%;
+    --primary-foreground: 0 0% 98%;
+    --primary-glow: 263 70% 60%;
+    --primary-dark: 263 70% 40%;
+    
+    /* Background System */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
+    --background-secondary: 263 15% 98%;
+    --foreground: 263 15% 10%;
+    
+    /* Card & Surface */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
+    --card-foreground: 263 15% 10%;
+    --card-glass: 0 0% 100% / 0.8;
+    --card-border: 263 20% 90%;
+    
+    /* Interactive Elements */
+    --secondary: 263 20% 96%;
+    --secondary-foreground: 263 15% 20%;
+    --accent: 263 30% 92%;
+    --accent-foreground: 263 15% 20%;
+    
+    /* Status Colors */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 98%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    
+    /* Neutral System */
+    --muted: 263 10% 95%;
+    --muted-foreground: 263 5% 45%;
+    --border: 263 20% 90%;
+    --input: 263 20% 94%;
+    --ring: 263 70% 50%;
+    
+    /* Layout */
+    --radius: 0.75rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.5rem;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(263 70% 50%) 0%, hsl(280 70% 60%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(263 70% 50%) 0%, hsl(280 70% 55%) 50%, hsl(300 60% 60%) 100%);
+    --gradient-glass: linear-gradient(135deg, hsl(0 0% 100% / 0.1) 0%, hsl(0 0% 100% / 0.05) 100%);
+    --gradient-backdrop: linear-gradient(135deg, hsl(263 50% 95%) 0%, hsl(280 40% 98%) 100%);
+    
+    /* Shadows & Effects */
+    --shadow-glass: 0 8px 32px hsl(263 70% 50% / 0.1);
+    --shadow-glow: 0 0 40px hsl(263 70% 60% / 0.3);
+    --shadow-card: 0 4px 20px hsl(263 20% 20% / 0.08);
+    --shadow-hover: 0 8px 30px hsl(263 70% 50% / 0.15);
+    
+    /* Animation Timings */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-spring: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
     --sidebar-background: 0 0% 98%;
 
@@ -100,6 +128,139 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans antialiased;
+    background: var(--gradient-backdrop);
+  }
+}
+
+/* Glassmorphism & Advanced Components */
+@layer components {
+  .glass {
+    @apply backdrop-blur-xl bg-card-glass border border-card-border;
+    box-shadow: var(--shadow-glass);
+  }
+  
+  .glass-card {
+    @apply glass rounded-xl p-6;
+  }
+  
+  .hero-gradient {
+    background: var(--gradient-hero);
+  }
+  
+  .primary-gradient {
+    background: var(--gradient-primary);
+  }
+  
+  .btn-glow {
+    @apply relative overflow-hidden;
+    box-shadow: var(--shadow-glow);
+    transition: var(--transition-spring);
+  }
+  
+  .btn-glow::before {
+    @apply absolute inset-0 opacity-0;
+    content: '';
+    background: linear-gradient(45deg, transparent 30%, hsl(0 0% 100% / 0.2) 50%, transparent 70%);
+    transform: translateX(-100%);
+    transition: var(--transition-smooth);
+  }
+  
+  .btn-glow:hover::before {
+    @apply opacity-100;
+    transform: translateX(100%);
+    transition-duration: 0.6s;
+  }
+  
+  .btn-3d {
+    @apply transform-gpu;
+    transition: var(--transition-spring);
+  }
+  
+  .btn-3d:hover {
+    @apply -translate-y-1;
+    transform: translateY(-4px) translateZ(10px) scale(1.02);
+    box-shadow: var(--shadow-hover);
+  }
+  
+  .btn-3d:active {
+    @apply translate-y-0;
+    transform: translateY(0) translateZ(0) scale(0.98);
+  }
+  
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite alternate;
+  }
+  
+  .animate-slide-up {
+    animation: slide-up 0.6s ease-out forwards;
+  }
+  
+  .animate-scale-in {
+    animation: scale-in 0.5s ease-out forwards;
+  }
+}
+
+/* Advanced Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-glow {
+  0% { box-shadow: var(--shadow-glow); }
+  100% { box-shadow: 0 0 60px hsl(263 70% 60% / 0.5); }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Responsive Optimizations */
+@media (max-width: 768px) {
+  .btn-3d:hover {
+    transform: translateY(-2px) scale(1.01);
+  }
+  
+  .glass {
+    @apply backdrop-blur-sm;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .btn-3d,
+  .btn-glow,
+  .animate-float,
+  .animate-pulse-glow {
+    @apply transition-none;
+    animation: none;
   }
 }
