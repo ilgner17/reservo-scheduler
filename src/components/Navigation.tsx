@@ -35,26 +35,23 @@ export function Navigation({ isAuthenticated = false, variant = "landing" }: Nav
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 glass border-b border-card-border",
+        "fixed top-0 left-0 right-0 z-40 glass border-b border-card-border",
         variant === "dashboard" && "bg-background/95"
       )}
     >
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-12">
           {/* Logo */}
           <motion.div 
-            className="flex items-center space-x-3"
+            className="flex items-center"
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 400 }}
           >
             <img 
               src={logoImage} 
               alt="Reservo Logo" 
-              className="h-8 w-8 object-contain"
+              className="h-10 w-10 object-contain"
             />
-            <span className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              Reservo
-            </span>
           </motion.div>
 
           {/* Desktop Navigation */}
@@ -64,10 +61,17 @@ export function Navigation({ isAuthenticated = false, variant = "landing" }: Nav
                 {landingItems.map((item) => (
                   <motion.a
                     key={item.label}
-                    href={item.href}
+                    href={item.href === "#features" ? "#features" : item.href === "#pricing" ? "#pricing" : item.href}
                     className="text-muted-foreground hover:text-foreground transition-colors relative group"
                     whileHover={{ y: -2 }}
                     transition={{ type: "spring", stiffness: 400 }}
+                    onClick={(e) => {
+                      if (item.href === "#features" || item.href === "#pricing") {
+                        e.preventDefault();
+                        const element = document.querySelector(item.href);
+                        element?.scrollIntoView({ behavior: 'smooth' });
+                      }
+                    }}
                   >
                     {item.label}
                     <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-primary group-hover:w-full transition-all duration-300" />
@@ -139,9 +143,16 @@ export function Navigation({ isAuthenticated = false, variant = "landing" }: Nav
                   {landingItems.map((item) => (
                     <a
                       key={item.label}
-                      href={item.href}
+                      href={item.href === "#features" ? "#features" : item.href === "#pricing" ? "#pricing" : item.href}
                       className="block py-2 text-muted-foreground hover:text-foreground transition-colors"
-                      onClick={() => setIsMobileMenuOpen(false)}
+                      onClick={(e) => {
+                        setIsMobileMenuOpen(false);
+                        if (item.href === "#features" || item.href === "#pricing") {
+                          e.preventDefault();
+                          const element = document.querySelector(item.href);
+                          element?.scrollIntoView({ behavior: 'smooth' });
+                        }
+                      }}
                     >
                       {item.label}
                     </a>
