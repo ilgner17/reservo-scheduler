@@ -134,6 +134,8 @@ export type Database = {
           name: string
           phone: string | null
           pix_key: string | null
+          plan: string | null
+          plan_limit: number | null
           profession: string | null
           settings: Json | null
           slug: string | null
@@ -153,6 +155,8 @@ export type Database = {
           name: string
           phone?: string | null
           pix_key?: string | null
+          plan?: string | null
+          plan_limit?: number | null
           profession?: string | null
           settings?: Json | null
           slug?: string | null
@@ -172,6 +176,8 @@ export type Database = {
           name?: string
           phone?: string | null
           pix_key?: string | null
+          plan?: string | null
+          plan_limit?: number | null
           profession?: string | null
           settings?: Json | null
           slug?: string | null
@@ -221,6 +227,50 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          created_at: string
+          ends_at: string
+          id: string
+          plan_id: string
+          start_at: string
+          status: string
+          stripe_subscription_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          ends_at: string
+          id?: string
+          plan_id: string
+          start_at?: string
+          status?: string
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          ends_at?: string
+          id?: string
+          plan_id?: string
+          start_at?: string
+          status?: string
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
       }
     }
     Views: {
