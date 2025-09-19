@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Calendar, User, Settings, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 import logoImage from "@/assets/logo.png";
 
 interface NavigationProps {
@@ -12,16 +14,18 @@ interface NavigationProps {
 
 export function Navigation({ isAuthenticated = false, variant = "landing" }: NavigationProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { signOut } = useAuth();
+  const navigate = useNavigate();
 
   const landingItems = [
+    { label: "Sobre", href: "/about" },
     { label: "Recursos", href: "#features" },
     { label: "Preços", href: "#pricing" },
-    { label: "Contato", href: "#contact" },
   ];
 
   const dashboardItems = [
     { label: "Dashboard", href: "/dashboard", icon: Calendar },
-    { label: "Perfil", href: "/profile", icon: User },
+    { label: "Novo Agendamento", href: "/new-booking", icon: Calendar },
     { label: "Configurações", href: "/settings", icon: Settings },
   ];
 
@@ -71,15 +75,15 @@ export function Navigation({ isAuthenticated = false, variant = "landing" }: Nav
                 ))}
                 {!isAuthenticated ? (
                   <div className="flex items-center space-x-3">
-                    <Button variant="ghost" size="sm">
+                    <Button variant="ghost" size="sm" onClick={() => navigate('/login')}>
                       Entrar
                     </Button>
-                    <Button size="sm" className="btn-glow btn-3d">
+                    <Button size="sm" className="btn-glow btn-3d" onClick={() => navigate('/signup')}>
                       Começar Grátis
                     </Button>
                   </div>
                 ) : (
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" onClick={() => navigate('/dashboard')}>
                     Dashboard
                   </Button>
                 )}
@@ -101,7 +105,7 @@ export function Navigation({ isAuthenticated = false, variant = "landing" }: Nav
                     </motion.a>
                   );
                 })}
-                <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
+                <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive" onClick={signOut}>
                   <LogOut className="w-4 h-4 mr-2" />
                   Sair
                 </Button>
@@ -144,10 +148,10 @@ export function Navigation({ isAuthenticated = false, variant = "landing" }: Nav
                   ))}
                   {!isAuthenticated && (
                     <div className="pt-3 space-y-2">
-                      <Button variant="ghost" size="sm" className="w-full justify-start">
+                      <Button variant="ghost" size="sm" className="w-full justify-start" onClick={() => navigate('/login')}>
                         Entrar
                       </Button>
-                      <Button size="sm" className="w-full">
+                      <Button size="sm" className="w-full" onClick={() => navigate('/signup')}>
                         Começar Grátis
                       </Button>
                     </div>
@@ -169,7 +173,7 @@ export function Navigation({ isAuthenticated = false, variant = "landing" }: Nav
                       </a>
                     );
                   })}
-                  <Button variant="ghost" size="sm" className="w-full justify-start text-destructive hover:text-destructive mt-4">
+                  <Button variant="ghost" size="sm" className="w-full justify-start text-destructive hover:text-destructive mt-4" onClick={signOut}>
                     <LogOut className="w-4 h-4 mr-2" />
                     Sair
                   </Button>

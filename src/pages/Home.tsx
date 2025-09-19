@@ -1,12 +1,15 @@
 import { Navigation } from "@/components/Navigation";
 import { Hero } from "@/components/Hero";
 import { motion } from "framer-motion";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Home() {
+  const { user } = useAuth();
+  
   return (
     <div className="min-h-screen">
       {/* Navigation */}
-      <Navigation variant="landing" />
+      <Navigation variant="landing" isAuthenticated={!!user} />
       
       {/* Hero Section */}
       <Hero />
@@ -49,24 +52,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Contact Section Placeholder */}
-      <section id="contact" className="py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Entre em <span className="bg-gradient-primary bg-clip-text text-transparent">Contato</span>
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Tem dúvidas? Nossa equipe está aqui para ajudar
-            </p>
-          </motion.div>
-        </div>
-      </section>
 
       {/* Footer */}
       <footer className="bg-foreground text-background py-12">
