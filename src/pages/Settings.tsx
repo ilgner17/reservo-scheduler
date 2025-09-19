@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,22 +6,26 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Navigation } from "@/components/Navigation";
+import { BackButton } from "@/components/BackButton";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Save, User, Briefcase, Phone, CreditCard } from "lucide-react";
+import { Save, User, Briefcase, Phone, CreditCard, Camera, Upload } from "lucide-react";
 
 export default function Settings() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
+  const [avatarUploading, setAvatarUploading] = useState(false);
   const [profile, setProfile] = useState({
     name: "",
     profession: "",
     bio: "",
     phone: "",
     pix_key: "",
-    slug: ""
+    slug: "",
+    avatar_url: ""
   });
 
   useEffect(() => {
@@ -47,7 +51,8 @@ export default function Settings() {
           bio: data.bio || "",
           phone: data.phone || "",
           pix_key: data.pix_key || "",
-          slug: data.slug || ""
+          slug: data.slug || "",
+          avatar_url: data.avatar_url || ""
         });
       }
     } catch (error) {
@@ -57,6 +62,74 @@ export default function Settings() {
         description: "Não foi possível carregar seus dados.",
         variant: "destructive",
       });
+    }
+  };
+
+  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type and size
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Erro",
+        description: "Por favor, selecione uma imagem válida.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) { // 2MB limit
+      toast({
+        title: "Erro",
+        description: "A imagem deve ter menos que 2MB.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setAvatarUploading(true);
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user?.id}/avatar.${fileExt}`;
+
+      // Upload to Supabase Storage
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(fileName, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(fileName);
+
+      // Update profile with new avatar URL
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ avatar_url: data.publicUrl })
+        .eq('user_id', user?.id);
+
+      if (updateError) throw updateError;
+
+      setProfile(prev => ({ ...prev, avatar_url: data.publicUrl }));
+
+      toast({
+        title: "Sucesso",
+        description: "Foto de perfil atualizada com sucesso!"
+      });
+
+    } catch (error) {
+      console.error('Error uploading avatar:', error);
+      toast({
+        title: "Erro",
+        description: "Erro ao fazer upload da imagem.",
+        variant: "destructive"
+      });
+    } finally {
+      setAvatarUploading(false);
     }
   };
 
@@ -73,7 +146,8 @@ export default function Settings() {
           bio: profile.bio,
           phone: profile.phone,
           pix_key: profile.pix_key,
-          slug: profile.slug
+          slug: profile.slug,
+          avatar_url: profile.avatar_url
         })
         .eq('user_id', user.id);
 
@@ -104,15 +178,67 @@ export default function Settings() {
 
   return (
     <div className="min-h-screen bg-gradient-backdrop">
-      <Navigation />
+      <Navigation variant="dashboard" />
       
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 pt-20 pb-8">
+        <BackButton className="mb-4" />
+        
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-3xl font-bold mb-8">Configurações da Conta</h1>
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold mb-2">Configurações</h1>
+            <p className="text-muted-foreground">
+              Gerencie suas informações pessoais e preferências da conta
+            </p>
+          </div>
+
+          {/* Avatar Section */}
+          <Card className="glass-card mb-8">
+            <div className="text-center p-6">
+              <h2 className="text-xl font-semibold mb-6">Foto de Perfil</h2>
+              
+              <div className="flex flex-col items-center space-y-4">
+                <div className="relative">
+                  <div className="w-24 h-24 rounded-full bg-muted flex items-center justify-center overflow-hidden border-2 border-border">
+                    {profile.avatar_url ? (
+                      <img 
+                        src={profile.avatar_url} 
+                        alt="Avatar" 
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <Camera className="w-8 h-8 text-muted-foreground" />
+                    )}
+                  </div>
+                  
+                  <Button
+                    size="sm"
+                    className="absolute -bottom-2 -right-2 rounded-full w-8 h-8 p-0"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={avatarUploading}
+                  >
+                    <Upload className="w-4 h-4" />
+                  </Button>
+                </div>
+                
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleAvatarUpload}
+                  className="hidden"
+                />
+                
+                <p className="text-sm text-muted-foreground max-w-sm">
+                  Clique no ícone para alterar sua foto de perfil. 
+                  Formatos aceitos: JPG, PNG. Tamanho máximo: 2MB.
+                </p>
+              </div>
+            </div>
+          </Card>
 
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Informações Pessoais */}
