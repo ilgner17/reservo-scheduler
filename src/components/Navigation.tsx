@@ -48,9 +48,9 @@ export function Navigation({ isAuthenticated = false, variant = "landing" }: Nav
             transition={{ type: "spring", stiffness: 400 }}
           >
             <img 
-              src={logoImage} 
+              src="/src/assets/reservo-logo.png" 
               alt="Reservo Logo" 
-              className="h-10 w-10 object-contain"
+              className="h-8 w-8 object-contain"
             />
           </motion.div>
 
