@@ -16,11 +16,13 @@ export type Database = {
     Tables: {
       bookings: {
         Row: {
+          booking_type: string | null
           client_email: string
           client_name: string
           client_phone: string | null
           created_at: string
           currency: string | null
+          dynamic_price_cents: number | null
           end_at: string
           id: string
           notes: string | null
@@ -32,11 +34,13 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          booking_type?: string | null
           client_email: string
           client_name: string
           client_phone?: string | null
           created_at?: string
           currency?: string | null
+          dynamic_price_cents?: number | null
           end_at: string
           id?: string
           notes?: string | null
@@ -48,11 +52,13 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          booking_type?: string | null
           client_email?: string
           client_name?: string
           client_phone?: string | null
           created_at?: string
           currency?: string | null
+          dynamic_price_cents?: number | null
           end_at?: string
           id?: string
           notes?: string | null
@@ -69,6 +75,47 @@ export type Database = {
             columns: ["service_id"]
             isOneToOne: false
             referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          booking_id: string | null
+          created_at: string
+          id: string
+          message: string | null
+          sent_at: string | null
+          status: string | null
+          type: string
+          user_id: string
+        }
+        Insert: {
+          booking_id?: string | null
+          created_at?: string
+          id?: string
+          message?: string | null
+          sent_at?: string | null
+          status?: string | null
+          type: string
+          user_id: string
+        }
+        Update: {
+          booking_id?: string | null
+          created_at?: string
+          id?: string
+          message?: string | null
+          sent_at?: string | null
+          status?: string | null
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
             referencedColumns: ["id"]
           },
         ]
@@ -128,6 +175,7 @@ export type Database = {
           avatar_url: string | null
           bio: string | null
           created_at: string
+          custom_messages: Json | null
           id: string
           monthly_bookings_count: number | null
           monthly_bookings_limit: number | null
@@ -143,12 +191,14 @@ export type Database = {
           timezone: string | null
           updated_at: string
           user_id: string
+          whatsapp_phone: string | null
           working_hours: Json | null
         }
         Insert: {
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
+          custom_messages?: Json | null
           id?: string
           monthly_bookings_count?: number | null
           monthly_bookings_limit?: number | null
@@ -164,12 +214,14 @@ export type Database = {
           timezone?: string | null
           updated_at?: string
           user_id: string
+          whatsapp_phone?: string | null
           working_hours?: Json | null
         }
         Update: {
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
+          custom_messages?: Json | null
           id?: string
           monthly_bookings_count?: number | null
           monthly_bookings_limit?: number | null
@@ -185,9 +237,51 @@ export type Database = {
           timezone?: string | null
           updated_at?: string
           user_id?: string
+          whatsapp_phone?: string | null
           working_hours?: Json | null
         }
         Relationships: []
+      }
+      revenues: {
+        Row: {
+          amount_cents: number
+          booking_id: string | null
+          created_at: string
+          currency: string | null
+          id: string
+          method: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_cents: number
+          booking_id?: string | null
+          created_at?: string
+          currency?: string | null
+          id?: string
+          method: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_cents?: number
+          booking_id?: string | null
+          created_at?: string
+          currency?: string | null
+          id?: string
+          method?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "revenues_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       services: {
         Row: {
@@ -230,6 +324,7 @@ export type Database = {
       }
       subscriptions: {
         Row: {
+          booking_limit: number | null
           created_at: string
           ends_at: string
           id: string
@@ -241,6 +336,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          booking_limit?: number | null
           created_at?: string
           ends_at: string
           id?: string
@@ -252,6 +348,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          booking_limit?: number | null
           created_at?: string
           ends_at?: string
           id?: string
