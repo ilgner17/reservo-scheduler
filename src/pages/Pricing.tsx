@@ -26,7 +26,7 @@ export default function Pricing() {
     },
     {
       name: "Profissional",
-      price: "R$ 19,90",
+      price: "R$ 37,90",
       period: "/mês", 
       description: "Para profissionais em crescimento",
       icon: Zap,
@@ -47,7 +47,7 @@ export default function Pricing() {
     },
     {
       name: "Premium",
-      price: "R$ 37,90",
+      price: "R$ 49,90",
       period: "/mês",
       description: "Para quem quer o máximo",
       icon: Crown,
