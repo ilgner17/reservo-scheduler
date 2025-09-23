@@ -5,7 +5,7 @@ import { Menu, X, Calendar, User, Settings, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import logoImage from "@/assets/logo.png";
+import reservoLogo from "@/assets/reservo-logo.png";
 
 interface NavigationProps {
   isAuthenticated?: boolean;
@@ -48,9 +48,9 @@ export function Navigation({ isAuthenticated = false, variant = "landing" }: Nav
             transition={{ type: "spring", stiffness: 400 }}
           >
             <img 
-              src="/src/assets/reservo-logo.png" 
+              src={reservoLogo} 
               alt="Reservo Logo" 
-              className="h-8 w-8 object-contain"
+              className="h-16 w-16 object-contain"
             />
           </motion.div>
 

@@ -91,12 +91,12 @@ export function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.6 }}
-              className="flex flex-col sm:flex-row gap-4"
+              className="flex justify-center"
             >
               <Link to="/signup">
-                <Button size="lg" className="btn-glow btn-3d group">
+                <Button size="lg" className="btn-glow btn-3d group px-8 py-4 text-lg">
                   Começar Grátis Agora
-                  <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
             </motion.div>
