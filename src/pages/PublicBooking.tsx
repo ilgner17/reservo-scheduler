@@ -11,10 +11,10 @@ import { Badge } from "@/components/ui/badge";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { CalendarIcon, Clock, User, Mail, Phone, FileText, CreditCard, QrCode, Star, MapPin, Award, Shield } from "lucide-react";
+import { CalendarIcon, Clock, User, Mail, Phone, FileText, CreditCard, QrCode, Star, MapPin, Award, Shield, DollarSign } from "lucide-react";
 import { format, addMinutes } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import logoImage from "@/assets/logo.png";
+import reservoLogo from "@/assets/reservo-logo.png";
 
 export default function PublicBooking() {
   const { slug } = useParams();
@@ -23,12 +23,12 @@ export default function PublicBooking() {
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1); // 1: booking, 2: payment
   const [professional, setProfessional] = useState<any>(null);
-  const [services, setServices] = useState<any[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [selectedTime, setSelectedTime] = useState("");
-  const [selectedService, setSelectedService] = useState<any>(null);
   const [paymentMethod, setPaymentMethod] = useState("pix");
   const [formData, setFormData] = useState({
+    service_type: "",
+    service_price: "",
     client_name: "",
     client_email: "",
     client_phone: "",
@@ -40,6 +40,12 @@ export default function PublicBooking() {
     "11:00", "11:30", "12:00", "12:30", "13:00", "13:30",
     "14:00", "14:30", "15:00", "15:30", "16:00", "16:30",
     "17:00", "17:30", "18:00", "18:30", "19:00", "19:30"
+  ];
+
+  const priceOptions = [
+    80, 100, 120, 150, 180, 200, 220, 250, 280, 300, 320, 350, 380, 400, 420, 450, 
+    480, 500, 520, 550, 580, 600, 620, 650, 680, 700, 720, 750, 780, 800, 820, 850, 
+    880, 900, 920, 950, 980, 1000
   ];
 
   useEffect(() => {
@@ -59,15 +65,6 @@ export default function PublicBooking() {
       if (profileError) throw profileError;
       
       setProfessional(profileData);
-
-      const { data: servicesData, error: servicesError } = await supabase
-        .from('services')
-        .select('*')
-        .eq('user_id', profileData.user_id)
-        .eq('is_active', true);
-
-      if (servicesError) throw servicesError;
-      setServices(servicesData || []);
     } catch (error) {
       console.error('Error fetching professional data:', error);
       toast({
@@ -81,7 +78,7 @@ export default function PublicBooking() {
   const handleBookingSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!selectedDate || !selectedTime || !selectedService) {
+    if (!selectedDate || !selectedTime || !formData.service_type || !formData.service_price) {
       toast({
         title: "Campos obrigatórios",
         description: "Preencha todos os campos obrigatórios.",
@@ -102,22 +99,22 @@ export default function PublicBooking() {
       const startAt = new Date(selectedDate!);
       startAt.setHours(hours, minutes, 0, 0);
       
-      // Calculate end datetime
-      const endAt = addMinutes(startAt, selectedService.duration_minutes);
+      // Calculate end datetime (1 hour default)
+      const endAt = addMinutes(startAt, 60);
 
       // Create booking
       const { data: bookingData, error: bookingError } = await supabase
         .from('bookings')
         .insert({
           professional_id: professional.user_id,
-          service_id: selectedService.id,
           client_name: formData.client_name,
           client_email: formData.client_email,
           client_phone: formData.client_phone,
           start_at: startAt.toISOString(),
           end_at: endAt.toISOString(),
-          price_cents: selectedService.price_cents,
+          price_cents: parseInt(formData.service_price) * 100,
           notes: formData.notes,
+          booking_type: formData.service_type,
           status: 'pending'
         })
         .select()
@@ -131,7 +128,7 @@ export default function PublicBooking() {
         .insert({
           booking_id: bookingData.id,
           method: paymentMethod,
-          amount_cents: selectedService.price_cents,
+          amount_cents: parseInt(formData.service_price) * 100,
           status: 'pending'
         });
 
@@ -145,6 +142,8 @@ export default function PublicBooking() {
       // Reset form
       setStep(1);
       setFormData({
+        service_type: "",
+        service_price: "",
         client_name: "",
         client_email: "",
         client_phone: "",
@@ -152,7 +151,6 @@ export default function PublicBooking() {
       });
       setSelectedDate(undefined);
       setSelectedTime("");
-      setSelectedService(null);
     } catch (error) {
       console.error('Error creating booking:', error);
       toast({
@@ -181,12 +179,12 @@ export default function PublicBooking() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <img 
-                src={logoImage} 
+                src={reservoLogo} 
                 alt="Reservo Logo" 
-                className="h-8 w-8 object-contain"
+                className="h-12 w-12 object-cover rounded-lg"
               />
               <span className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                Reservo
+                Reserva
               </span>
             </div>
             
@@ -216,9 +214,17 @@ export default function PublicBooking() {
                     whileHover={{ scale: 1.05 }}
                     transition={{ type: "spring", stiffness: 400 }}
                   >
-                    <div className="w-full h-full rounded-full bg-gradient-primary flex items-center justify-center text-white text-2xl font-bold border-4 border-primary/20">
-                      {professional.name?.split(' ').map((n: string) => n[0]).join('') || 'P'}
-                    </div>
+                    {professional.avatar_url ? (
+                      <img 
+                        src={professional.avatar_url} 
+                        alt="Avatar" 
+                        className="w-full h-full rounded-full object-cover border-4 border-primary/20"
+                      />
+                    ) : (
+                      <div className="w-full h-full rounded-full bg-gradient-primary flex items-center justify-center text-white text-2xl font-bold border-4 border-primary/20">
+                        {professional.name?.split(' ').map((n: string) => n[0]).join('') || 'P'}
+                      </div>
+                    )}
                     <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-success rounded-full border-2 border-background flex items-center justify-center">
                       <div className="w-2 h-2 bg-white rounded-full"></div>
                     </div>
@@ -253,22 +259,6 @@ export default function PublicBooking() {
                     </p>
                   </div>
                 )}
-
-                {/* Services */}
-                <div className="mb-6">
-                  <h3 className="font-semibold mb-3">Serviços</h3>
-                  <div className="space-y-2">
-                    {services.map((service) => (
-                      <div key={service.id} className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
-                        <div>
-                          <p className="font-medium text-sm">{service.name}</p>
-                          <p className="text-xs text-muted-foreground">{service.duration_minutes} min</p>
-                        </div>
-                        <p className="font-semibold text-primary">R$ {(service.price_cents / 100).toFixed(2)}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
               </div>
             </Card>
           </motion.div>
@@ -294,18 +284,29 @@ export default function PublicBooking() {
                 {step === 1 ? (
                   <form onSubmit={handleBookingSubmit} className="space-y-6">
                     <div>
-                      <Label htmlFor="service">Serviço *</Label>
-                      <Select value={selectedService?.id || ""} onValueChange={(value) => {
-                        const service = services.find(s => s.id === value);
-                        setSelectedService(service);
-                      }}>
+                      <Label htmlFor="service_type">Tipo de Agendamento *</Label>
+                      <Input
+                        id="service_type"
+                        value={formData.service_type}
+                        onChange={(e) => setFormData(prev => ({ ...prev, service_type: e.target.value }))}
+                        placeholder="Ex: Consulta, Sessão, Avaliação..."
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="service_price">Preço (R$) *</Label>
+                      <Select value={formData.service_price} onValueChange={(value) => setFormData(prev => ({ ...prev, service_price: value }))}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Selecione o serviço" />
+                          <div className="flex items-center">
+                            <DollarSign className="w-4 h-4 mr-2" />
+                            <SelectValue placeholder="Selecione o preço" />
+                          </div>
                         </SelectTrigger>
                         <SelectContent>
-                          {services.map((service) => (
-                            <SelectItem key={service.id} value={service.id}>
-                              {service.name} - {service.duration_minutes}min - R$ {(service.price_cents / 100).toFixed(2)}
+                          {priceOptions.map((price) => (
+                            <SelectItem key={price} value={price.toString()}>
+                              R$ {price.toFixed(2)}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -413,11 +414,11 @@ export default function PublicBooking() {
                     <div className="bg-muted/50 p-6 rounded-lg">
                       <h3 className="font-semibold mb-4">Resumo do Agendamento</h3>
                       <div className="space-y-2 text-sm">
-                        <p><strong>Serviço:</strong> {selectedService?.name}</p>
+                        <p><strong>Tipo:</strong> {formData.service_type}</p>
                         <p><strong>Data:</strong> {selectedDate && format(selectedDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}</p>
                         <p><strong>Horário:</strong> {selectedTime}</p>
-                        <p><strong>Duração:</strong> {selectedService?.duration_minutes} minutos</p>
-                        <p><strong>Valor:</strong> R$ {selectedService && (selectedService.price_cents / 100).toFixed(2)}</p>
+                        <p><strong>Duração:</strong> 60 minutos</p>
+                        <p><strong>Valor:</strong> R$ {parseInt(formData.service_price).toFixed(2)}</p>
                       </div>
                     </div>
 
@@ -428,54 +429,37 @@ export default function PublicBooking() {
                           type="button"
                           variant={paymentMethod === "pix" ? "default" : "outline"}
                           onClick={() => setPaymentMethod("pix")}
-                          className="h-20 flex-col"
+                          className="justify-start"
                         >
-                          <QrCode className="w-6 h-6 mb-2" />
+                          <QrCode className="w-4 h-4 mr-2" />
                           PIX
                         </Button>
                         <Button
                           type="button"
-                          variant={paymentMethod === "stripe" ? "default" : "outline"}
-                          onClick={() => setPaymentMethod("stripe")}
-                          className="h-20 flex-col"
+                          variant={paymentMethod === "card" ? "default" : "outline"}
+                          onClick={() => setPaymentMethod("card")}
+                          className="justify-start"
                         >
-                          <CreditCard className="w-6 h-6 mb-2" />
+                          <CreditCard className="w-4 h-4 mr-2" />
                           Cartão
                         </Button>
                       </div>
                     </div>
 
-                    {paymentMethod === "pix" && professional.pix_key && (
-                      <div className="bg-primary/10 p-4 rounded-lg">
-                        <h4 className="font-semibold mb-2">Instruções PIX</h4>
-                        <p className="text-sm text-muted-foreground mb-3">
-                          Use a chave PIX abaixo para fazer o pagamento:
-                        </p>
-                        <div className="bg-background p-3 rounded border">
-                          <code className="text-sm">{professional.pix_key}</code>
-                        </div>
-                        <p className="text-xs text-muted-foreground mt-2">
-                          Após o pagamento, envie o comprovante para confirmação.
-                        </p>
-                      </div>
-                    )}
-
                     <div className="flex gap-4">
-                      <Button 
-                        variant="outline" 
-                        onClick={() => setStep(1)}
-                        className="flex-1"
-                      >
+                      <Button variant="outline" onClick={() => setStep(1)} className="flex-1">
                         Voltar
                       </Button>
                       <Button 
-                        onClick={handlePaymentSubmit}
+                        onClick={handlePaymentSubmit} 
                         disabled={loading}
-                        className="flex-1 btn-glow"
+                        className="flex-1 btn-glow btn-3d"
                       >
                         {loading ? (
                           <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin mr-2" />
-                        ) : null}
+                        ) : (
+                          <CalendarIcon className="w-4 h-4 mr-2" />
+                        )}
                         Confirmar Agendamento
                       </Button>
                     </div>

@@ -47,7 +47,7 @@ export default function Pricing() {
     },
     {
       name: "Premium",
-      price: "R$ 49,90",
+      price: "R$ 59,90",
       period: "/mês",
       description: "Para quem quer o máximo",
       icon: Crown,

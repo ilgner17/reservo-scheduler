@@ -12,10 +12,10 @@ import { Navigation } from "@/components/Navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { CalendarIcon, Clock, User, Mail, Phone, FileText, ArrowLeft, DollarSign } from "lucide-react";
+import { CalendarIcon, Clock, User, Mail, Phone, FileText, DollarSign } from "lucide-react";
 import { format, addMinutes } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function NewBooking() {
   const { user } = useAuth();
@@ -23,11 +23,11 @@ export default function NewBooking() {
   const navigate = useNavigate();
   
   const [loading, setLoading] = useState(false);
-  const [services, setServices] = useState([]);
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [selectedTime, setSelectedTime] = useState("");
   const [formData, setFormData] = useState({
-    service_id: "",
+    service_type: "",
+    service_price: "",
     client_name: "",
     client_email: "",
     client_phone: "",
@@ -41,36 +41,16 @@ export default function NewBooking() {
     "17:00", "17:30", "18:00", "18:30", "19:00", "19:30"
   ];
 
-  useEffect(() => {
-    if (user) {
-      fetchServices();
-    }
-  }, [user]);
-
-  const fetchServices = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('services')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('is_active', true);
-
-      if (error) throw error;
-      setServices(data || []);
-    } catch (error) {
-      console.error('Error fetching services:', error);
-      toast({
-        title: "Erro ao carregar serviços",
-        description: "Não foi possível carregar seus serviços.",
-        variant: "destructive",
-      });
-    }
-  };
+  const priceOptions = [
+    80, 100, 120, 150, 180, 200, 220, 250, 280, 300, 320, 350, 380, 400, 420, 450, 
+    480, 500, 520, 550, 580, 600, 620, 650, 680, 700, 720, 750, 780, 800, 820, 850, 
+    880, 900, 920, 950, 980, 1000
+  ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!selectedDate || !selectedTime || !formData.service_id) {
+    if (!selectedDate || !selectedTime || !formData.service_type || !formData.service_price) {
       toast({
         title: "Campos obrigatórios",
         description: "Preencha todos os campos obrigatórios.",
@@ -82,15 +62,13 @@ export default function NewBooking() {
     setLoading(true);
 
     try {
-      const selectedService = services.find(s => s.id === formData.service_id);
-      
       // Create start datetime
       const [hours, minutes] = selectedTime.split(':').map(Number);
       const startAt = new Date(selectedDate);
       startAt.setHours(hours, minutes, 0, 0);
       
-      // Calculate end datetime
-      const endAt = addMinutes(startAt, selectedService.duration_minutes);
+      // Calculate end datetime (1 hour default)
+      const endAt = addMinutes(startAt, 60);
 
       // Check for conflicts
       const { data: conflicts } = await supabase
@@ -116,14 +94,14 @@ export default function NewBooking() {
         .from('bookings')
         .insert({
           professional_id: user.id,
-          service_id: formData.service_id,
           client_name: formData.client_name,
           client_email: formData.client_email,
           client_phone: formData.client_phone,
           start_at: startAt.toISOString(),
           end_at: endAt.toISOString(),
-          price_cents: selectedService.price_cents,
+          price_cents: parseInt(formData.service_price) * 100,
           notes: formData.notes,
+          booking_type: formData.service_type,
           status: 'confirmed'  // Admin created bookings are auto-confirmed
         });
 
@@ -149,23 +127,17 @@ export default function NewBooking() {
 
   return (
     <div className="min-h-screen bg-gradient-backdrop">
-      <Navigation />
+      <Navigation variant="dashboard" isAuthenticated={true} />
       
       <div className="container mx-auto px-4 py-8">
+        <BackButton className="mb-6" />
+        
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <div className="flex items-center space-x-4 mb-8">
-            <Link to="/dashboard">
-              <Button variant="ghost" size="sm">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Voltar
-              </Button>
-            </Link>
-            <h1 className="text-3xl font-bold">Novo Agendamento</h1>
-          </div>
+          <h1 className="text-3xl font-bold mb-8">Novo Agendamento</h1>
 
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Form */}
@@ -173,15 +145,29 @@ export default function NewBooking() {
               <div className="p-6">
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
-                    <Label htmlFor="service">Serviço *</Label>
-                    <Select value={formData.service_id} onValueChange={(value) => setFormData(prev => ({ ...prev, service_id: value }))}>
+                    <Label htmlFor="service_type">Tipo de Agendamento *</Label>
+                    <Input
+                      id="service_type"
+                      value={formData.service_type}
+                      onChange={(e) => setFormData(prev => ({ ...prev, service_type: e.target.value }))}
+                      placeholder="Ex: Consulta, Sessão, Avaliação..."
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="service_price">Preço (R$) *</Label>
+                    <Select value={formData.service_price} onValueChange={(value) => setFormData(prev => ({ ...prev, service_price: value }))}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Selecione o serviço" />
+                        <div className="flex items-center">
+                          <DollarSign className="w-4 h-4 mr-2" />
+                          <SelectValue placeholder="Selecione o preço" />
+                        </div>
                       </SelectTrigger>
                       <SelectContent>
-                        {services.map((service) => (
-                          <SelectItem key={service.id} value={service.id}>
-                            {service.name} - {service.duration_minutes}min - R$ {(service.price_cents / 100).toFixed(2)}
+                        {priceOptions.map((price) => (
+                          <SelectItem key={price} value={price.toString()}>
+                            R$ {price.toFixed(2)}
                           </SelectItem>
                         ))}
                       </SelectContent>

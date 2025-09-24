@@ -20,7 +20,7 @@ export function Navigation({ isAuthenticated = false, variant = "landing" }: Nav
   const landingItems = [
     { label: "Sobre", href: "/about" },
     { label: "Recursos", href: "#features" },
-    { label: "Preços", href: "#pricing" },
+    { label: "Preços", href: "/pricing" },
   ];
 
   const dashboardItems = [
@@ -50,7 +50,7 @@ export function Navigation({ isAuthenticated = false, variant = "landing" }: Nav
             <img 
               src={reservoLogo} 
               alt="Reservo Logo" 
-              className="h-16 w-16 object-contain"
+              className="h-12 w-12 object-cover rounded-lg"
             />
           </motion.div>
 
@@ -61,23 +61,16 @@ export function Navigation({ isAuthenticated = false, variant = "landing" }: Nav
                 {landingItems.map((item) => (
                   <motion.a
                     key={item.label}
-                    href={item.href === "#features" ? "#features" : item.href === "#pricing" ? "#pricing" : item.href}
+                    href={item.href}
                     className="text-muted-foreground hover:text-foreground transition-colors relative group"
                     whileHover={{ y: -2 }}
                     transition={{ type: "spring", stiffness: 400 }}
-                    onClick={(e) => {
-                      if (item.href === "#features" || item.href === "#pricing") {
-                        e.preventDefault();
-                        const element = document.querySelector(item.href);
-                        element?.scrollIntoView({ behavior: 'smooth' });
-                      }
-                    }}
                   >
                     {item.label}
                     <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-primary group-hover:w-full transition-all duration-300" />
                   </motion.a>
                 ))}
-                {!isAuthenticated ? (
+                {!isAuthenticated && (
                   <div className="flex items-center space-x-3">
                     <Button variant="ghost" size="sm" onClick={() => navigate('/login')}>
                       Entrar
@@ -86,10 +79,6 @@ export function Navigation({ isAuthenticated = false, variant = "landing" }: Nav
                       Começar Grátis
                     </Button>
                   </div>
-                ) : (
-                  <Button variant="outline" size="sm" onClick={() => navigate('/dashboard')}>
-                    Dashboard
-                  </Button>
                 )}
               </>
             ) : (
@@ -143,16 +132,9 @@ export function Navigation({ isAuthenticated = false, variant = "landing" }: Nav
                   {landingItems.map((item) => (
                     <a
                       key={item.label}
-                      href={item.href === "#features" ? "#features" : item.href === "#pricing" ? "#pricing" : item.href}
+                      href={item.href}
                       className="block py-2 text-muted-foreground hover:text-foreground transition-colors"
-                      onClick={(e) => {
-                        setIsMobileMenuOpen(false);
-                        if (item.href === "#features" || item.href === "#pricing") {
-                          e.preventDefault();
-                          const element = document.querySelector(item.href);
-                          element?.scrollIntoView({ behavior: 'smooth' });
-                        }
-                      }}
+                      onClick={() => setIsMobileMenuOpen(false)}
                     >
                       {item.label}
                     </a>

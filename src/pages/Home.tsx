@@ -3,6 +3,7 @@ import { Hero } from "@/components/Hero";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import reservoLogo from "@/assets/reservo-logo.png";
 
 export default function Home() {
   const { user } = useAuth();
@@ -105,7 +106,7 @@ export default function Home() {
               <div className="p-8 text-center">
                 <h3 className="text-2xl font-bold mb-4">Profissional</h3>
                 <div className="mb-6">
-                  <span className="text-4xl font-bold text-primary">R$ 19,90</span>
+                  <span className="text-4xl font-bold text-primary">R$ 37,90</span>
                   <span className="text-muted-foreground">/mês</span>
                 </div>
                 <ul className="space-y-3 mb-8 text-left">
@@ -145,7 +146,7 @@ export default function Home() {
               <div className="p-8 text-center">
                 <h3 className="text-2xl font-bold mb-4">Premium</h3>
                 <div className="mb-6">
-                  <span className="text-4xl font-bold text-primary">R$ 37,90</span>
+                  <span className="text-4xl font-bold text-primary">R$ 59,90</span>
                   <span className="text-muted-foreground">/mês</span>
                 </div>
                 <ul className="space-y-3 mb-8 text-left">
@@ -218,8 +219,16 @@ export default function Home() {
               </ul>
             </div>
           </div>
-          <div className="border-t border-background/20 mt-8 pt-8 text-center text-background/70">
-            <p>&copy; 2025 Reservo. Todos os direitos reservados.</p>
+          <div className="border-t border-background/20 mt-8 pt-8 flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <img 
+                src={reservoLogo} 
+                alt="Reservo Logo" 
+                className="h-8 w-8 object-cover rounded-lg"
+              />
+              <span className="text-lg font-bold text-background">Reserva</span>
+            </div>
+            <p className="text-background/70">&copy; 2025 Reserva. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>
