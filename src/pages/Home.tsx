@@ -3,7 +3,7 @@ import { Hero } from "@/components/Hero";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import reservoLogo from "@/assets/reservo-logo.png";
+import newLogo from "@/assets/new-logo.png";
 
 export default function Home() {
   const { user } = useAuth();
@@ -222,9 +222,9 @@ export default function Home() {
           <div className="border-t border-background/20 mt-8 pt-8 flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <img 
-                src={reservoLogo} 
+                src={newLogo} 
                 alt="Reservo Logo" 
-                className="h-8 w-8 object-cover rounded-lg"
+                className="h-12 w-24 object-contain"
               />
               <span className="text-lg font-bold text-background">Reserva</span>
             </div>

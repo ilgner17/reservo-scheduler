@@ -14,7 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { CalendarIcon, Clock, User, Mail, Phone, FileText, CreditCard, QrCode, Star, MapPin, Award, Shield, DollarSign } from "lucide-react";
 import { format, addMinutes } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import reservoLogo from "@/assets/reservo-logo.png";
+import newLogo from "@/assets/new-logo.png";
 
 export default function PublicBooking() {
   const { slug } = useParams();
@@ -179,9 +179,9 @@ export default function PublicBooking() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <img 
-                src={reservoLogo} 
-                alt="Reservo Logo" 
-                className="h-12 w-12 object-cover rounded-lg"
+                src={newLogo} 
+                alt="Logo" 
+                className="h-12 w-24 object-contain"
               />
               <span className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
                 Reserva

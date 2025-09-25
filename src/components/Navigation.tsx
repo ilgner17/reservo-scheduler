@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Calendar, User, Settings, LogOut } from "lucide-react";
+import { Menu, X, Calendar, User, Settings, LogOut, BookOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import reservoLogo from "@/assets/reservo-logo.png";
+import newLogo from "@/assets/new-logo.png";
 
 interface NavigationProps {
   isAuthenticated?: boolean;
@@ -26,7 +26,7 @@ export function Navigation({ isAuthenticated = false, variant = "landing" }: Nav
   const dashboardItems = [
     { label: "Dashboard", href: "/dashboard", icon: Calendar },
     { label: "Novo Agendamento", href: "/new-booking", icon: Calendar },
-    { label: "Recursos", href: "/resources", icon: Settings },
+    { label: "Recursos", href: "/resources", icon: BookOpen },
     { label: "Configurações", href: "/settings", icon: Settings },
   ];
 
@@ -49,9 +49,9 @@ export function Navigation({ isAuthenticated = false, variant = "landing" }: Nav
             transition={{ type: "spring", stiffness: 400 }}
           >
             <img 
-              src={reservoLogo} 
+              src={newLogo} 
               alt="Reservo Logo" 
-              className="h-12 w-12 object-cover rounded-lg"
+              className="h-16 w-32 object-contain"
             />
           </motion.div>
 
