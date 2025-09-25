@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Navigation } from "@/components/Navigation";
+import { BackButton } from "@/components/BackButton";
 import { Check, Zap, Crown, Gift } from "lucide-react";
 
 export default function Pricing() {
@@ -82,6 +83,7 @@ export default function Pricing() {
       <Navigation />
       
       <div className="container mx-auto px-4 py-16">
+        <BackButton className="mb-8" />
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

@@ -9,6 +9,7 @@ import Dashboard from "@/pages/Dashboard";
 import Settings from "@/pages/Settings";
 import About from "@/pages/About";
 import Pricing from "@/pages/Pricing";
+import Resources from "@/pages/Resources";
 import NewBooking from "@/pages/NewBooking";
 import CheckoutSuccess from "@/pages/CheckoutSuccess";
 import PublicBooking from "@/pages/PublicBooking";
@@ -26,6 +27,11 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/about" element={<About />} />
             <Route path="/pricing" element={<Pricing />} />
+            <Route path="/resources" element={
+              <ProtectedRoute>
+                <Resources />
+              </ProtectedRoute>
+            } />
             <Route path="/checkout/success" element={<CheckoutSuccess />} />
             <Route path="/booking/:slug" element={<PublicBooking />} />
             <Route path="/dashboard" element={

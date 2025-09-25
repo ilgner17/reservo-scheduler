@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Navigation } from "@/components/Navigation";
+import { BackButton } from "@/components/BackButton";
 import { Calendar, Clock, Users, Shield, Zap, Heart } from "lucide-react";
 
 export default function About() {
@@ -42,6 +43,7 @@ export default function About() {
       <Navigation />
       
       <div className="container mx-auto px-4 py-16">
+        <BackButton className="mb-8" />
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

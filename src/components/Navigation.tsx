@@ -26,6 +26,7 @@ export function Navigation({ isAuthenticated = false, variant = "landing" }: Nav
   const dashboardItems = [
     { label: "Dashboard", href: "/dashboard", icon: Calendar },
     { label: "Novo Agendamento", href: "/new-booking", icon: Calendar },
+    { label: "Recursos", href: "/resources", icon: Settings },
     { label: "Configurações", href: "/settings", icon: Settings },
   ];
 
