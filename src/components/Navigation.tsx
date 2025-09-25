@@ -70,7 +70,7 @@ export function Navigation({ isAuthenticated = false, variant = "landing" }: Nav
                     <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-primary group-hover:w-full transition-all duration-300" />
                   </motion.a>
                 ))}
-                {!isAuthenticated && (
+                {!isAuthenticated ? (
                   <div className="flex items-center space-x-3">
                     <Button variant="ghost" size="sm" onClick={() => navigate('/login')}>
                       Entrar
@@ -79,6 +79,10 @@ export function Navigation({ isAuthenticated = false, variant = "landing" }: Nav
                       Começar Grátis
                     </Button>
                   </div>
+                ) : (
+                  <Button size="sm" className="btn-glow btn-3d" onClick={() => navigate('/dashboard')}>
+                    Dashboard
+                  </Button>
                 )}
               </>
             ) : (
@@ -139,13 +143,19 @@ export function Navigation({ isAuthenticated = false, variant = "landing" }: Nav
                       {item.label}
                     </a>
                   ))}
-                  {!isAuthenticated && (
+                  {!isAuthenticated ? (
                     <div className="pt-3 space-y-2">
                       <Button variant="ghost" size="sm" className="w-full justify-start" onClick={() => navigate('/login')}>
                         Entrar
                       </Button>
                       <Button size="sm" className="w-full" onClick={() => navigate('/signup')}>
                         Começar Grátis
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="pt-3">
+                      <Button size="sm" className="w-full" onClick={() => navigate('/dashboard')}>
+                        Dashboard
                       </Button>
                     </div>
                   )}

@@ -8,7 +8,8 @@ import { Separator } from "@/components/ui/separator";
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Check } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import logoImage from "@/assets/logo.png";
+import { BackButton } from "@/components/BackButton";
+import reservoLogo from "@/assets/reservo-logo.png";
 
 const plans = [
   {
@@ -70,6 +71,11 @@ export default function Signup() {
         <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-primary-glow/20 rounded-full blur-3xl animate-float" style={{ animationDelay: "-2s" }} />
       </div>
 
+      {/* Back Button */}
+      <div className="absolute top-4 left-4 z-20">
+        <BackButton />
+      </div>
+
       <div className="container mx-auto px-4 relative z-10 max-w-4xl">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -79,18 +85,15 @@ export default function Signup() {
           {/* Header */}
           <div className="text-center mb-8">
             <motion.div 
-              className="flex items-center justify-center space-x-3 mb-6"
+              className="flex items-center justify-center mb-6"
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 400 }}
             >
               <img 
-                src={logoImage} 
-                alt="Reservo Logo" 
-                className="h-10 w-10 object-contain"
+                src={reservoLogo} 
+                alt="Reserva Logo" 
+                className="h-24 w-24 object-cover rounded-xl shadow-lg"
               />
-              <span className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                Reservo
-              </span>
             </motion.div>
             
             <motion.h1
