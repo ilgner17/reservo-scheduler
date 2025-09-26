@@ -13,6 +13,7 @@ import Resources from "@/pages/Resources";
 import NewBooking from "@/pages/NewBooking";
 import CheckoutSuccess from "@/pages/CheckoutSuccess";
 import PublicBooking from "@/pages/PublicBooking";
+import TestWebhook from "@/pages/TestWebhook";
 import NotFound from "@/pages/NotFound";
 import "./App.css";
 
@@ -47,6 +48,11 @@ function App() {
             <Route path="/new-booking" element={
               <ProtectedRoute>
                 <NewBooking />
+              </ProtectedRoute>
+            } />
+            <Route path="/test-webhook" element={
+              <ProtectedRoute>
+                <TestWebhook />
               </ProtectedRoute>
             } />
             <Route path="*" element={<NotFound />} />

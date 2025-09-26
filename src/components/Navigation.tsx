@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Calendar, User, Settings, LogOut, BookOpen } from "lucide-react";
+import { Menu, X, Calendar, User, Settings, LogOut, BookOpen, MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -27,6 +27,7 @@ export function Navigation({ isAuthenticated = false, variant = "landing" }: Nav
     { label: "Dashboard", href: "/dashboard", icon: Calendar },
     { label: "Novo Agendamento", href: "/new-booking", icon: Calendar },
     { label: "Recursos", href: "/resources", icon: BookOpen },
+    { label: "Teste WhatsApp", href: "/test-webhook", icon: MessageSquare },
     { label: "Configurações", href: "/settings", icon: Settings },
   ];
 

@@ -97,7 +97,8 @@ serve(async (req) => {
     })
   } catch (error) {
     console.error('Webhook error:', error)
-    return new Response(JSON.stringify({ error: error.message }), {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
+    return new Response(JSON.stringify({ error: errorMessage }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 400,
     })
@@ -131,7 +132,7 @@ async function handleCheckoutSessionCompleted(session: any, supabase: any) {
   
   if (session.amount_total === 3790) { // R$ 37.90 in cents
     planId = 'premium'
-    planLimit = null // unlimited
+    planLimit = -1; // unlimited represented as -1
   }
 
   // Create or update subscription

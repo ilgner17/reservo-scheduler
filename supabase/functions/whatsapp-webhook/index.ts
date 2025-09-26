@@ -67,14 +67,14 @@ serve(async (req) => {
 
     // Prepare WhatsApp message data
     const whatsappPayload = {
-      clienteNome: booking.client_name,
-      clienteTelefone: booking.client_phone,
-      profissionalNome: booking.profiles?.name || '',
-      profissionalTelefone: booking.profiles?.phone || '',
-      data: new Date(booking.start_at).toLocaleDateString('pt-BR'),
-      hora: new Date(booking.start_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+      clienteNome: (booking as any).client_name,
+      clienteTelefone: (booking as any).client_phone,
+      profissionalNome: (booking as any).profiles?.name || '',
+      profissionalTelefone: (booking as any).profiles?.phone || '',
+      data: new Date((booking as any).start_at).toLocaleDateString('pt-BR'),
+      hora: new Date((booking as any).start_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
       tipo: 'Consulta',
-      preco: `R$ ${(booking.price_cents / 100).toFixed(2)}`,
+      preco: `R$ ${((booking as any).price_cents / 100).toFixed(2)}`,
       action: action || 'novo_agendamento'
     }
 
@@ -90,14 +90,6 @@ serve(async (req) => {
       })
     }
 
-    // Update booking status to indicate WhatsApp was sent
-    await supabase
-      .from('bookings')
-      .update({ 
-        notes: booking.notes ? `${booking.notes}\n[WhatsApp enviado]` : '[WhatsApp enviado]'
-      })
-      .eq('id', bookingId)
-
     return new Response(
       JSON.stringify({ 
         success: true, 
@@ -112,8 +104,9 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('WhatsApp webhook error:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: errorMessage }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 400,
