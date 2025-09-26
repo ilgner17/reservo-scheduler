@@ -134,6 +134,19 @@ export default function PublicBooking() {
 
       if (paymentError) throw paymentError;
 
+      // Send WhatsApp notification
+      try {
+        await supabase.functions.invoke('whatsapp-webhook', {
+          body: {
+            bookingId: bookingData.id,
+            action: 'novo_agendamento'
+          }
+        });
+      } catch (webhookError) {
+        // Don't fail the booking if webhook fails, just log it
+        console.error('WhatsApp webhook error:', webhookError);
+      }
+
       toast({
         title: "Agendamento criado!",
         description: "Seu agendamento foi criado com sucesso. Aguarde a confirmação do pagamento.",
