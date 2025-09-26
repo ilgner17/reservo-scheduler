@@ -90,7 +90,7 @@ export default function NewBooking() {
       }
 
       // Create booking
-      const { error } = await supabase
+      const { data: bookingData, error } = await supabase
         .from('bookings')
         .insert({
           professional_id: user.id,
@@ -103,9 +103,26 @@ export default function NewBooking() {
           notes: formData.notes,
           booking_type: formData.service_type,
           status: 'confirmed'  // Admin created bookings are auto-confirmed
-        });
+        })
+        .select()
+        .single();
 
       if (error) throw error;
+
+      // Send WhatsApp notification
+      if (bookingData) {
+        try {
+          await supabase.functions.invoke('whatsapp-webhook', {
+            body: {
+              bookingId: bookingData.id,
+              action: 'novo_agendamento'
+            }
+          });
+        } catch (webhookError) {
+          // Don't fail the booking if webhook fails, just log it
+          console.error('WhatsApp webhook error:', webhookError);
+        }
+      }
 
       toast({
         title: "Agendamento criado!",
