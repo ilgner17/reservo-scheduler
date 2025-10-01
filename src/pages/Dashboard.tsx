@@ -87,7 +87,7 @@ export default function Dashboard() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-backdrop">
-        <Navigation />
+        <Navigation variant="dashboard" isAuthenticated={true} />
         <div className="flex items-center justify-center h-96">
           <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
         </div>
@@ -128,7 +128,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-backdrop">
-      <Navigation />
+      <Navigation variant="dashboard" isAuthenticated={true} />
       
       <div className="container mx-auto px-4 py-8">
         {/* Header */}

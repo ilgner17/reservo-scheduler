@@ -41,7 +41,7 @@ export function Navigation({ isAuthenticated = false, variant = "landing" }: Nav
       )}
     >
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-12">
+        <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <motion.div 
             className="flex items-center"
@@ -51,7 +51,7 @@ export function Navigation({ isAuthenticated = false, variant = "landing" }: Nav
             <img 
               src={newLogo} 
               alt="Reservo Logo" 
-              className="h-20 w-40 object-contain"
+              className="h-14 w-28 object-contain"
             />
           </motion.div>
 
