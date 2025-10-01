@@ -51,7 +51,7 @@ export function Navigation({ isAuthenticated = false, variant = "landing" }: Nav
             <img 
               src={newLogo} 
               alt="Reservo Logo" 
-              className="h-14 w-28 object-contain"
+              className="h-16 w-32 object-contain"
             />
           </motion.div>
 

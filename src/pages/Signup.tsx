@@ -13,25 +13,50 @@ import reservoLogo from "@/assets/reservo-logo.png";
 
 const plans = [
   {
-    name: "Starter",
-    price: "Grátis",
-    period: "para sempre",
-    features: ["Até 50 agendamentos/mês", "Calendário básico", "Suporte por email"],
-    popular: false
+    name: "Gratuito",
+    price: "R$ 0",
+    period: "/mês",
+    features: [
+      "Até 5 agendamentos por mês",
+      "Calendário básico",
+      "Notificações por email",
+      "Link personalizado"
+    ],
+    popular: false,
+    checkoutUrl: null
   },
   {
-    name: "Pro",
-    price: "R$ 29",
+    name: "Profissional",
+    price: "R$ 37,90",
     period: "/mês",
-    features: ["Agendamentos ilimitados", "Pagamentos integrados", "Relatórios avançados", "Suporte prioritário"],
-    popular: true
+    features: [
+      "Até 30 agendamentos por mês",
+      "Pagamentos integrados (PIX + Cartão)",
+      "Relatórios básicos",
+      "Suporte prioritário"
+    ],
+    popular: true,
+    checkoutUrl: "https://buy.stripe.com/test_14A6oH5YbfE614RgBra7C02"
+  },
+  {
+    name: "Premium",
+    price: "R$ 59,90",
+    period: "/mês",
+    features: [
+      "Agendamentos ilimitados",
+      "Todos os métodos de pagamento",
+      "Relatórios avançados",
+      "WhatsApp integrado"
+    ],
+    popular: false,
+    checkoutUrl: "https://buy.stripe.com/test_cNi4gzeuH77A7tf4SJa7C01"
   }
 ];
 
 export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState("starter");
+  const [selectedPlan, setSelectedPlan] = useState("gratuito");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -49,7 +74,18 @@ export default function Signup() {
     const { error } = await signUp(formData.email, formData.password, formData.name, formData.profession);
     
     if (!error) {
-      navigate('/login');
+      // Get the selected plan details
+      const selectedPlanDetails = plans.find(
+        plan => plan.name.toLowerCase() === selectedPlan
+      );
+      
+      // If it's a paid plan, redirect to Stripe checkout
+      if (selectedPlanDetails?.checkoutUrl) {
+        window.location.href = selectedPlanDetails.checkoutUrl;
+      } else {
+        // If it's the free plan, redirect to dashboard
+        navigate('/dashboard');
+      }
     }
     
     setIsLoading(false);
