@@ -27,7 +27,6 @@ export function Navigation({ isAuthenticated = false, variant = "landing" }: Nav
     { label: "Dashboard", href: "/dashboard", icon: Calendar },
     { label: "Novo Agendamento", href: "/new-booking", icon: Calendar },
     { label: "Recursos", href: "/resources", icon: BookOpen },
-    { label: "Teste WhatsApp", href: "/test-webhook", icon: MessageSquare },
     { label: "Configurações", href: "/settings", icon: Settings },
   ];
 
@@ -52,7 +51,7 @@ export function Navigation({ isAuthenticated = false, variant = "landing" }: Nav
             <img 
               src={newLogo} 
               alt="Reservo Logo" 
-              className="h-16 w-32 object-contain"
+              className="h-20 w-40 object-contain"
             />
           </motion.div>
 

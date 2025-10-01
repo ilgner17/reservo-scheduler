@@ -180,15 +180,15 @@ export default function Settings() {
     <div className="min-h-screen bg-gradient-backdrop">
       <Navigation variant="dashboard" />
       
-      <div className="container mx-auto px-4 pt-20 pb-8">
-        <BackButton className="mb-4" />
+      <div className="container mx-auto px-4 pt-16 pb-6 max-w-6xl">
+        <BackButton className="mb-3" />
         
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <div className="text-center mb-8">
+          <div className="text-center mb-6">
             <h1 className="text-3xl font-bold mb-2">Configurações</h1>
             <p className="text-muted-foreground">
               Gerencie suas informações pessoais e preferências da conta

@@ -109,6 +109,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         title: "Logout realizado",
         description: "Até logo!",
       });
+      window.location.href = '/';
     }
   };
 

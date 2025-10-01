@@ -186,9 +186,12 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8">
             <div className="space-y-4">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-primary rounded-lg"></div>
-                <span className="text-xl font-bold">Reservo</span>
+              <div className="flex items-center justify-center">
+                <img 
+                  src={newLogo} 
+                  alt="Reservo Logo" 
+                  className="h-24 w-48 object-contain"
+                />
               </div>
               <p className="text-background/70">
                 Agendamentos inteligentes para profissionais modernos.
@@ -220,13 +223,12 @@ export default function Home() {
             </div>
           </div>
           <div className="border-t border-background/20 mt-8 pt-8 flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center justify-center flex-1">
               <img 
                 src={newLogo} 
                 alt="Reservo Logo" 
-                className="h-12 w-24 object-contain"
+                className="h-20 w-40 object-contain"
               />
-              <span className="text-lg font-bold text-background">Reserva</span>
             </div>
             <p className="text-background/70">&copy; 2025 Reserva. Todos os direitos reservados.</p>
           </div>
